@@ -140,8 +140,8 @@ const canonical = "https://openzro.io";
               <span class="meta-v">self-host</span>
             </div>
             <div class="meta-item">
-              <span class="meta-k">IDP</span>
-              <span class="meta-v">OIDC / Dex</span>
+              <span class="meta-k">ADMISSION</span>
+              <span class="meta-v">HITL gate</span>
             </div>
           </div>
         </div>
@@ -650,6 +650,14 @@ $ helm install openzro openzro/openzro \
             <div class="ct-col">
               <span class="cell partial">partial</span>
             </div>
+          </div>
+          <div class="ct-row">
+            <div class="ct-feat">
+              Peer admission gate (human-in-the-loop + auto-revalidate)
+            </div>
+            <div class="ct-col oz"><span class="cell yes">✓</span></div>
+            <div class="ct-col"><span class="cell no">—</span></div>
+            <div class="ct-col"><span class="cell no">—</span></div>
           </div>
           <div class="ct-row">
             <div class="ct-feat">
