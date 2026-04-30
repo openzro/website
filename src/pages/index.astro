@@ -1,24 +1,45 @@
 ---
-const title = "openZro — Open-source zero-trust mesh networking on WireGuard";
+// openZro landing page. Bold dark hero with animated WireGuard mesh
+// canvas, alternating dark/light sections, gradient typography. The
+// design is a port of the design-handoff bundle Claude Design produced
+// — content adapted to match what openZro actually ships today
+// (BSD-3-Clause, real install URLs, real ADR links, accurate features).
+//
+// Stack notes:
+//   * Astro 5 + Tailwind 3 — Tailwind covers utility shortcuts (max-w,
+//     grid layouts on the use-case section); section-level visual
+//     primitives (terminal chrome, mesh halo, marquee) live in the
+//     two CSS files imported below.
+//   * Canvas mesh visualization is vanilla JS (no React / preact)
+//     loaded from src/scripts/mesh-viz.js. Astro ships only the JS
+//     it explicitly imports.
+//   * Reveal-on-scroll respects prefers-reduced-motion via the
+//     `.reveal` class CSS rule (transition is gated server-side
+//     in the stylesheet).
+
+import "../styles/landing.css";
+import "../styles/sections.css";
+
+const title = "openZro — Self-hosted zero-trust mesh on WireGuard";
 const description =
-  "openZro is a self-hosted, BSD-3-Clause zero-trust mesh networking platform built on WireGuard. A community-maintained continuation of NetBird at v0.52.2, kept permissively licensed.";
+  "Self-hosted WireGuard mesh with HA, OIDC SSO, peer admission gates, and audit-grade logs. BSD-3-Clause continuation of NetBird at v0.52.2 — kept permissively licensed.";
+const canonical = "https://openzro.io";
 ---
 
 <!doctype html>
-<html lang="en" class="bg-ink text-white antialiased scroll-smooth">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://openzro.io" />
+    <meta property="og:url" content={canonical} />
     <meta property="og:image" content="https://openzro.io/brand/openzro-icon.svg" />
     <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
     <meta name="theme-color" content="#0f0a1f" />
     <link rel="icon" type="image/svg+xml" href="/brand/openzro-icon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -28,374 +49,801 @@ const description =
       rel="stylesheet"
     />
   </head>
-  <body class="font-sans">
-    <!-- ===================== NAV ===================== -->
-    <header
-      class="sticky top-0 z-50 border-b border-violet-900/40 bg-ink/80 backdrop-blur-md"
-    >
-      <div
-        class="mx-auto max-w-6xl px-4 sm:px-6 py-4 flex items-center justify-between"
-      >
-        <a href="/" class="flex items-center gap-2.5">
-          <img
-            src="/brand/openzro-icon.svg"
-            alt=""
-            width="32"
-            height="32"
-            class="rounded"
-          />
-          <span class="font-semibold text-xl tracking-wordmark leading-none">
-            open<span class="text-violet-400 font-bold">Z</span>ro
-          </span>
+  <body>
+    <!-- ============================================================
+         1. NAV — sticky, blurs on scroll
+         ============================================================ -->
+    <nav class="nav" id="nav">
+      <div class="nav-inner">
+        <a href="/" class="brand">
+          <img src="/brand/openzro-icon.svg" width="28" height="28" alt="" />
+          <span class="brand-wm">open<em>Z</em>ro</span>
         </a>
-        <nav
-          class="hidden md:flex items-center gap-7 text-sm text-violet-200/80"
-        >
-          <a href="#features" class="hover:text-white transition">Features</a>
-          <a href="#install" class="hover:text-white transition">Install</a>
-          <a href="#why" class="hover:text-white transition">Why fork</a>
-          <a
-            href="https://docs.openzro.io"
-            class="hover:text-white transition">Docs</a
-          >
-          <a
-            href="https://github.com/openzro/openzro"
-            class="hover:text-white transition">GitHub →</a
-          >
-        </nav>
-      </div>
-    </header>
-
-    <!-- ===================== HERO ===================== -->
-    <section class="relative overflow-hidden">
-      <div
-        class="absolute inset-0 bg-gradient-to-b from-violet-900/20 via-transparent to-transparent pointer-events-none"
-      >
-      </div>
-      <div
-        class="relative mx-auto max-w-6xl px-4 sm:px-6 py-24 md:py-32 text-center"
-      >
-        <p
-          class="inline-flex items-center gap-2 text-xs font-mono tracking-wider uppercase text-violet-300 mb-6 border border-violet-800/50 px-3 py-1 rounded-full"
-        >
-          <span class="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse"
-          ></span>
-          v0.53.1-alpha · BSD-3-Clause
-        </p>
-        <h1
-          class="text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight leading-[1.1] mb-6 max-w-3xl mx-auto"
-        >
-          Open-source zero-trust mesh networking
-          <span class="text-violet-400">on WireGuard.</span>
-        </h1>
-        <p class="text-lg md:text-xl text-violet-200/80 max-w-2xl mx-auto mb-10">
-          Self-hosted control plane. Peer-to-peer overlay. Native clients on
-          every OS. A community-maintained continuation of NetBird at the last
-          BSD-3-Clause release, kept permissively licensed.
-        </p>
-        <div class="flex flex-col sm:flex-row gap-3 justify-center">
-          <a
-            href="https://docs.openzro.io/get-started/install"
-            class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-violet-600 hover:bg-violet-700 transition font-semibold text-sm"
-          >
-            Get started
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              ><path d="M5 12h14M13 5l7 7-7 7"></path></svg
-            >
-          </a>
-          <a
-            href="https://github.com/openzro/openzro"
-            class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg border border-violet-800/60 hover:border-violet-600 hover:bg-violet-900/20 transition font-semibold text-sm"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"
-              ><path
-                d="M12 0a12 12 0 0 0-3.79 23.4c.6.11.82-.26.82-.58V21.1c-3.34.72-4.04-1.6-4.04-1.6-.55-1.4-1.34-1.77-1.34-1.77-1.1-.74.08-.73.08-.73 1.21.08 1.85 1.24 1.85 1.24 1.07 1.84 2.81 1.31 3.5 1 .1-.78.42-1.31.76-1.61-2.66-.3-5.46-1.33-5.46-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.11-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.3-1.55 3.3-1.23 3.3-1.23.65 1.66.24 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.61-2.8 5.62-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.82.58A12 12 0 0 0 12 0z"
-              ></path></svg
-            >
-            Star on GitHub
-          </a>
+        <div class="nav-links">
+          <a href="#how">How it works</a>
+          <a href="#features">Features</a>
+          <a href="#cli">CLI</a>
+          <a href="#use-cases">Use cases</a>
+          <a href="#compare">Compare</a>
         </div>
-        <pre
-          class="mt-12 mx-auto max-w-2xl text-left bg-ink-2/60 border border-violet-900/50 rounded-lg p-4 text-sm font-mono overflow-x-auto"><span
-            class="text-violet-400 select-none">$</span> curl -fsSL <span
-            class="text-violet-300">https://pkg.openzro.io/install.sh</span> | sh</pre>
-      </div>
-    </section>
-
-    <!-- ===================== FEATURES ===================== -->
-    <section id="features" class="border-t border-violet-900/40">
-      <div class="mx-auto max-w-6xl px-4 sm:px-6 py-20 md:py-24">
-        <h2
-          class="text-3xl md:text-4xl font-semibold tracking-tight mb-3 text-center"
-        >
-          Everything you need. None of the lock-in.
-        </h2>
-        <p
-          class="text-violet-200/70 text-center mb-14 max-w-2xl mx-auto"
-        >
-          openZro ships the entire control plane in a single Helm chart. Run
-          it on your own cluster. Own the data path end to end.
-        </p>
-        <div class="grid md:grid-cols-3 gap-5">
-          <div
-            class="rounded-xl border border-violet-900/50 bg-ink-2/40 p-6"
+        <div class="nav-cta">
+          <a href="https://docs.openzro.io" class="nav-link">Docs</a>
+          <a href="https://github.com/openzro/openzro" class="btn violet"
+            >Self-host →</a
           >
-            <div
-              class="w-10 h-10 rounded-lg bg-violet-900/40 text-violet-300 flex items-center justify-center mb-4"
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                ><circle cx="12" cy="12" r="3"></circle><path
-                  d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
-                ></path></svg
-              >
-            </div>
-            <h3 class="font-semibold text-lg mb-2">Self-hosted by design</h3>
-            <p class="text-violet-200/70 text-sm leading-relaxed">
-              Management, signal, relay, dashboard, IdP — every component runs
-              on your infrastructure. No managed cloud, no usage telemetry, no
-              third-party dependencies on the data path.
-            </p>
-          </div>
-          <div
-            class="rounded-xl border border-violet-900/50 bg-ink-2/40 p-6"
-          >
-            <div
-              class="w-10 h-10 rounded-lg bg-violet-900/40 text-violet-300 flex items-center justify-center mb-4"
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                ><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
-                ></path><path d="m9 12 2 2 4-4"></path></svg
-              >
-            </div>
-            <h3 class="font-semibold text-lg mb-2">Zero-trust by default</h3>
-            <p class="text-violet-200/70 text-sm leading-relaxed">
-              WireGuard data plane. SSO via OIDC (Keycloak, Okta, Entra,
-              Google, Authentik, Zitadel). Per-peer admission, posture checks,
-              ACL policies, audit log shipping — out of the box.
-            </p>
-          </div>
-          <div
-            class="rounded-xl border border-violet-900/50 bg-ink-2/40 p-6"
-          >
-            <div
-              class="w-10 h-10 rounded-lg bg-violet-900/40 text-violet-300 flex items-center justify-center mb-4"
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                ><polyline points="16 18 22 12 16 6"></polyline><polyline
-                  points="8 6 2 12 8 18"></polyline></svg
-              >
-            </div>
-            <h3 class="font-semibold text-lg mb-2">Permissively licensed</h3>
-            <p class="text-violet-200/70 text-sm leading-relaxed">
-              BSD-3-Clause across the tree. Forked from NetBird at v0.52.2 —
-              the last BSD release before upstream's AGPL-3.0 relicense — to
-              keep the codebase usable by operators, packagers and contributors
-              who can't adopt AGPL.
-            </p>
-          </div>
         </div>
       </div>
-    </section>
+    </nav>
 
-    <!-- ===================== INSTALL ===================== -->
-    <section id="install" class="border-t border-violet-900/40 bg-ink-2/20">
-      <div class="mx-auto max-w-6xl px-4 sm:px-6 py-20 md:py-24">
-        <h2
-          class="text-3xl md:text-4xl font-semibold tracking-tight mb-3 text-center"
-        >
-          Install on your stack
-        </h2>
-        <p
-          class="text-violet-200/70 text-center mb-14 max-w-2xl mx-auto"
-        >
-          Signed packages on every major distro, native installers for Windows
-          and macOS, plus a Helm chart for Kubernetes.
-        </p>
-        <div class="grid md:grid-cols-2 gap-5">
-          <div
-            class="rounded-xl border border-violet-900/50 bg-ink-2/40 p-6"
-          >
-            <h3 class="font-semibold mb-3 text-violet-300">
-              Linux · Debian / Ubuntu
-            </h3>
-            <pre
-              class="text-sm font-mono text-violet-200/90 overflow-x-auto"><code>curl -fsSL https://pkg.openzro.io/openzro-archive-key.asc \
-  | sudo gpg --dearmor -o /usr/share/keyrings/openzro.gpg
-echo "deb [signed-by=/usr/share/keyrings/openzro.gpg] \
-  https://pkg.openzro.io/apt stable main" \
-  | sudo tee /etc/apt/sources.list.d/openzro.list
-sudo apt update && sudo apt install openzro</code></pre>
-          </div>
-          <div
-            class="rounded-xl border border-violet-900/50 bg-ink-2/40 p-6"
-          >
-            <h3 class="font-semibold mb-3 text-violet-300">
-              Linux · Fedora / RHEL / openSUSE
-            </h3>
-            <pre
-              class="text-sm font-mono text-violet-200/90 overflow-x-auto"><code>sudo tee /etc/yum.repos.d/openzro.repo &lt;&lt;EOF
-[openzro]
-name=openZro
-baseurl=https://pkg.openzro.io/rpm/\$basearch
-enabled=1
-gpgcheck=1
-gpgkey=https://pkg.openzro.io/openzro-archive-key.asc
-EOF
-sudo dnf install openzro</code></pre>
-          </div>
-          <div
-            class="rounded-xl border border-violet-900/50 bg-ink-2/40 p-6"
-          >
-            <h3 class="font-semibold mb-3 text-violet-300">
-              Linux · Arch / CachyOS / Manjaro
-            </h3>
-            <pre
-              class="text-sm font-mono text-violet-200/90 overflow-x-auto"><code>yay -S openzro-bin
-# or via the signed pacman repo:
-# https://docs.openzro.io/get-started/install/linux</code></pre>
-          </div>
-          <div
-            class="rounded-xl border border-violet-900/50 bg-ink-2/40 p-6"
-          >
-            <h3 class="font-semibold mb-3 text-violet-300">
-              Kubernetes · Helm
-            </h3>
-            <pre
-              class="text-sm font-mono text-violet-200/90 overflow-x-auto"><code>helm repo add openzro https://openzro.github.io/helms
-helm install openzro openzro/openzro \
-  --create-namespace -n openzro \
-  -f my-values.yaml</code></pre>
-          </div>
-        </div>
-        <p class="text-center mt-10 text-sm text-violet-200/60">
-          Windows MSI · macOS PKG · Homebrew tap · Docker images · all on the
-          <a
-            href="https://github.com/openzro/openzro/releases"
-            class="text-violet-400 hover:text-violet-300 underline">releases page</a
-          >.
-        </p>
-      </div>
-    </section>
+    <!-- ============================================================
+         2. HERO — animated mesh canvas + floating chips + marquee
+         ============================================================ -->
+    <section class="section hero deep">
+      <div class="bg-aurora"></div>
+      <div class="bg-grid-dark"></div>
+      <div class="hero-spotlights"></div>
 
-    <!-- ===================== WHY FORK ===================== -->
-    <section id="why" class="border-t border-violet-900/40">
-      <div class="mx-auto max-w-3xl px-4 sm:px-6 py-20 md:py-24">
-        <h2
-          class="text-3xl md:text-4xl font-semibold tracking-tight mb-6 text-center"
-        >
-          Why we forked
-        </h2>
-        <div class="space-y-5 text-violet-200/85 text-base leading-relaxed">
-          <p>
+      <div class="section-inner hero-inner">
+        <div class="hero-copy">
+          <div class="tag dark live">v0.53.1 · BSD-3 fork of NetBird</div>
+          <h1 class="display reveal">
+            Zero-trust mesh,<br />
+            <span class="grad">on your iron.</span>
+          </h1>
+          <p class="lead on-dark reveal">
+            Self-hosted WireGuard mesh with high availability, OIDC SSO,
+            peer admission and audit logs. A community-maintained
+            continuation of NetBird at the last BSD-3 release —
+            permissively licensed, fork-friendly, no SaaS dependency.
+          </p>
+          <div class="hero-cta reveal">
             <a
-              href="https://github.com/netbirdio/netbird"
-              class="text-violet-400 hover:text-violet-300 underline"
-              >NetBird</a
-            > shipped under BSD-3-Clause for years. v0.53.0 (June 2025) relicensed
-            the project to AGPL-3.0. AGPL is a fine license for some use cases —
-            but it forces every operator who modifies the code to publish their
-            changes, and forbids embedding into BSD/MIT downstream projects.
-          </p>
-          <p>
-            For organizations that depend on a permissively-licensed mesh
-            networking stack (cloud platforms, hardware vendors, network
-            operators, OEMs), v0.53.0+ became unusable overnight.
-          </p>
-          <p>
-            <span class="font-semibold text-white">openZro</span> picks up the BSD-3 codebase at v0.52.2 — the last commit before
-            the relicense — and continues development under the original
-            license. Every feature, every security backport, every breaking
-            change is triaged clean-room from public CVE / GHSA prose to keep
-            the BSD-3 tree provably free of AGPL contamination.
-          </p>
-          <p class="text-sm text-violet-200/60 pt-2">
-            See <a
-              href="https://github.com/openzro/openzro/blob/main/docs/adr/0001-openzro-foundation.md"
-              class="text-violet-400 hover:text-violet-300 underline"
-              >ADR-0001 — openZro Foundation</a
-            > for the formal license posture and security backport rules.
-          </p>
+              href="https://docs.openzro.io/get-started/install"
+              class="btn primary"
+            >
+              <span>Install openZro</span>
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"
+                ><path
+                  d="M5 3l4 4-4 4"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"></path></svg
+              >
+            </a>
+            <a
+              href="https://github.com/openzro/openzro/blob/main/docs/adr"
+              class="btn ghost"
+            >
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"
+                ><path
+                  d="M2 4l5 5 5-5"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"></path></svg
+              >
+              <span>Read the architecture</span>
+            </a>
+          </div>
+          <div class="hero-meta reveal">
+            <div class="meta-item">
+              <span class="meta-k">PROTOCOL</span>
+              <span class="meta-v">WireGuard</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-k">LICENSE</span>
+              <span class="meta-v">BSD-3</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-k">DEPLOY</span>
+              <span class="meta-v">self-host</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-k">IDP</span>
+              <span class="meta-v">OIDC / Dex</span>
+            </div>
+          </div>
+        </div>
+        <div
+          class="hero-viz reveal"
+          role="img"
+          aria-label="Animated mesh of peers connecting to a central gateway"
+        >
+          <div class="mesh-wrap">
+            <canvas id="mesh-canvas" class="mesh-canvas"></canvas>
+            <div class="mesh-floats">
+              <div class="float-chip f1">
+                <span class="dot ok"></span>
+                <span class="k">peer</span>
+                <span class="v">edge-sa</span>
+                <span class="lat">12ms</span>
+              </div>
+              <div class="float-chip f2">
+                <span class="dot ok"></span>
+                <span class="k">posture</span>
+                <span class="v">verified</span>
+              </div>
+              <div class="float-chip f3">
+                <span class="dot warn"></span>
+                <span class="k">admission</span>
+                <span class="v">3 pending</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="marquee">
+        <div class="marquee-track" id="marquee-track">
+          <!-- items duplicated by JS for seamless loop -->
+          <span class="marquee-item"
+            ><span class="dot"></span>wg0 up · 12ms</span
+          >
+          <span class="marquee-item"
+            ><span class="dot"></span>peer admitted · sha256:e1c…</span
+          >
+          <span class="marquee-item"
+            ><span class="dot"></span>posture · macOS 14.4 · FileVault on</span
+          >
+          <span class="marquee-item"
+            ><span class="dot"></span>k8s-prod joined mesh</span
+          >
+          <span class="marquee-item"
+            ><span class="dot"></span>audit log · 1,284 events</span
+          >
+          <span class="marquee-item"
+            ><span class="dot"></span>HA failover · embedded NATS</span
+          >
+          <span class="marquee-item"
+            ><span class="dot"></span>OIDC · keycloak ok</span
+          >
+          <span class="marquee-item"
+            ><span class="dot"></span>route advertised · 10.42.0.0/16</span
+          >
+          <span class="marquee-item"
+            ><span class="dot"></span>setup-key · scope: prod</span
+          >
+          <span class="marquee-item"
+            ><span class="dot"></span>relay · rel://relay.example.com:33080</span
+          >
+          <span class="marquee-item"
+            ><span class="dot"></span>helm install openzro openzro/openzro</span
+          >
         </div>
       </div>
     </section>
 
-    <!-- ===================== FOOTER ===================== -->
-    <footer class="border-t border-violet-900/40 bg-ink-2/30">
-      <div
-        class="mx-auto max-w-6xl px-4 sm:px-6 py-12 grid md:grid-cols-4 gap-8"
-      >
-        <div class="md:col-span-2">
-          <a href="/" class="flex items-center gap-2.5 mb-3">
-            <img
-              src="/brand/openzro-icon.svg"
-              alt=""
+    <!-- ============================================================
+         3. HOW IT WORKS — light section, 3 cards with code
+         ============================================================ -->
+    <section class="section light" id="how">
+      <div class="bg-grid-light"></div>
+      <div class="section-inner">
+        <header class="sec-head">
+          <span class="eyebrow on-light"
+            ><span class="dot"></span>How it works</span
+          >
+          <h2 class="display">
+            Three steps from <em>nothing</em> to a working mesh.
+          </h2>
+        </header>
+        <div class="steps">
+          <div class="step reveal">
+            <div class="step-num">01</div>
+            <h3>Stand up the control plane</h3>
+            <p>
+              One Helm chart on Kubernetes or one Ansible playbook on bare
+              metal. HA out of the box via embedded NATS coordinator — no
+              external Redis required, no SaaS dependency, no phone-home.
+            </p>
+            <pre class="code-block light"><code>$ helm repo add openzro https://openzro.github.io/helms
+$ helm install openzro openzro/openzro \
+    --create-namespace -n openzro</code></pre>
+          </div>
+          <div class="step reveal">
+            <div class="step-num">02</div>
+            <h3>Join peers through your IdP</h3>
+            <p>
+              Embedded Dex federates Keycloak, Auth0, Google, Microsoft Entra,
+              Okta, Authentik, GitHub. Setup keys for headless joiners
+              (servers, CI runners). ACLs by tag — peer-to-peer mesh after
+              admission.
+            </p>
+            <pre class="code-block light"><code>$ openzro up
+→ awaiting OIDC login · browser opened
+✓ joined · scope: prod · routes: 10.42.0.0/16</code></pre>
+          </div>
+          <div class="step reveal">
+            <div class="step-num">03</div>
+            <h3>Route, observe, scale</h3>
+            <p>
+              WireGuard tunnels stay peer-to-peer. Every admission, route
+              change, and policy diff is logged. Add gateway hosts as you
+              grow — the rolling-update playbook drains and re-adds via cloud
+              LB without breaking peers.
+            </p>
+            <pre class="code-block light"><code>$ ansible-playbook -i inventories/prod \
+    playbooks/update.yml \
+    -e openzro_version=0.53.1-alpha.13</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         4. FEATURES — dark section, 6-card grid in a bordered panel
+         ============================================================ -->
+    <section class="section dark" id="features">
+      <div class="bg-grid-dark"></div>
+      <div class="section-inner">
+        <header class="sec-head">
+          <span class="eyebrow on-dark"
+            ><span class="dot"></span>Features</span
+          >
+          <h2 class="display on-dark">
+            Six capabilities that turn WireGuard<br />
+            into an enterprise-grade fabric.
+          </h2>
+          <p class="lead on-dark">
+            Permissive licensing, real HA, native installers on every OS, and
+            a control plane you can drop into your existing observability.
+          </p>
+        </header>
+        <div class="features-grid">
+          <div class="feature reveal">
+            <svg
               width="28"
               height="28"
-              class="rounded"
-            />
-            <span class="font-semibold text-lg tracking-wordmark leading-none">
-              open<span class="text-violet-400 font-bold">Z</span>ro
-            </span>
-          </a>
-          <p class="text-sm text-violet-200/60 max-w-md">
-            Open-source zero-trust mesh networking on WireGuard. BSD-3-Clause.
-          </p>
-        </div>
-        <div>
-          <h4 class="text-xs font-semibold uppercase tracking-wider text-violet-300 mb-3">
-            Product
-          </h4>
-          <ul class="space-y-2 text-sm">
-            <li><a href="https://docs.openzro.io" class="text-violet-200/70 hover:text-white">Docs</a></li>
-            <li><a href="https://github.com/openzro/openzro/releases" class="text-violet-200/70 hover:text-white">Releases</a></li>
-            <li><a href="https://pkg.openzro.io" class="text-violet-200/70 hover:text-white">Packages</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4 class="text-xs font-semibold uppercase tracking-wider text-violet-300 mb-3">
-            Project
-          </h4>
-          <ul class="space-y-2 text-sm">
-            <li><a href="https://github.com/openzro/openzro" class="text-violet-200/70 hover:text-white">GitHub</a></li>
-            <li><a href="https://github.com/openzro/openzro/blob/main/docs/adr" class="text-violet-200/70 hover:text-white">ADRs</a></li>
-            <li><a href="https://github.com/openzro/openzro/blob/main/LICENSE" class="text-violet-200/70 hover:text-white">License</a></li>
-          </ul>
+              viewBox="0 0 28 28"
+              fill="none"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path d="M5 22V8l9-3 9 3v14" stroke="#a78bfa"></path><path
+                d="M5 22h18M11 22v-7M17 22v-7"
+                stroke="#a78bfa"></path><circle cx="14" cy="11" r="1.5" fill="#a78bfa"
+              ></circle></svg
+            >
+            <h3>Self-hosted, BSD-3</h3>
+            <p>
+              Your network, your data, your binaries. Forked from NetBird at
+              v0.52.2 — fully open, fork-friendly, embeddable in BSD/MIT
+              downstreams.
+            </p>
+          </div>
+          <div class="feature reveal">
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 28 28"
+              fill="none"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><circle cx="8" cy="14" r="4" stroke="#a78bfa"></circle><circle
+                cx="20"
+                cy="14"
+                r="4"
+                stroke="#a78bfa"></circle><path d="M12 14h4" stroke="#a78bfa"
+              ></path><path
+                d="M8 7v3M20 7v3M8 18v3M20 18v3"
+                stroke="#a78bfa"></path></svg
+            >
+            <h3>Real high availability</h3>
+            <p>
+              Active-active management with embedded NATS coordinator. Sub-
+              second failover, no external Redis, no Postgres dance.
+              Data plane is pure WireGuard — survives coordinator outages.
+            </p>
+          </div>
+          <div class="feature reveal">
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 28 28"
+              fill="none"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path
+                d="M14 4l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V7l8-3z"
+                stroke="#a78bfa"></path><path
+                d="M10 13l3 3 5-5"
+                stroke="#a78bfa"></path></svg
+            >
+            <h3>OIDC SSO via embedded Dex</h3>
+            <p>
+              Keycloak, Auth0, Google, Microsoft Entra, Okta, Authentik,
+              Zitadel, GitHub — federate any OIDC IdP. Single-ingress, single
+              cert, same-origin cookies.
+            </p>
+          </div>
+          <div class="feature reveal">
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 28 28"
+              fill="none"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path d="M14 4v8M14 16v8M4 14h8M16 14h8" stroke="#a78bfa"
+              ></path><circle cx="14" cy="14" r="3" stroke="#a78bfa"
+              ></circle></svg
+            >
+            <h3>Tag-based ACL policies</h3>
+            <p>
+              Group by tag, allow / deny by group. Compiles to WireGuard
+              allowed-IPs at the peer. Diff before apply, version in git,
+              roll back in seconds.
+            </p>
+          </div>
+          <div class="feature reveal">
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 28 28"
+              fill="none"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path d="M6 4h12l4 4v16H6z" stroke="#a78bfa"></path><path
+                d="M18 4v4h4M10 13h8M10 17h8M10 9h4"
+                stroke="#a78bfa"></path></svg
+            >
+            <h3>Audit-grade event log</h3>
+            <p>
+              Every admission, policy change, peer connect / disconnect tied
+              to a verified identity. JSON output on every CLI; ship to your
+              SIEM via syslog or push to S3.
+            </p>
+          </div>
+          <div class="feature reveal">
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 28 28"
+              fill="none"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><rect x="4" y="6" width="20" height="6" rx="1" stroke="#a78bfa"
+              ></rect><rect x="4" y="16" width="20" height="6" rx="1" stroke="#a78bfa"
+              ></rect><circle cx="8" cy="9" r="0.8" fill="#a78bfa"
+              ></circle><circle cx="8" cy="19" r="0.8" fill="#a78bfa"
+              ></circle></svg
+            >
+            <h3>Native installers, every OS</h3>
+            <p>
+              Signed deb, rpm and pacman repos, Windows MSI, macOS .pkg,
+              Homebrew tap, Docker images, Helm chart, Ansible playbook —
+              every distribution channel ships from the same release.
+            </p>
+          </div>
         </div>
       </div>
-      <div class="border-t border-violet-900/40">
-        <div
-          class="mx-auto max-w-6xl px-4 sm:px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-violet-200/50"
-        >
-          <span>© 2026 openZro · BSD-3-Clause</span>
-          <span class="font-mono">
-            WireGuard® is a registered trademark of Jason A. Donenfeld
-          </span>
+    </section>
+
+    <!-- ============================================================
+         5. CLI SHOWCASE — terminal mock with 3 tabs
+         ============================================================ -->
+    <section class="section dark" id="cli">
+      <div class="bg-grid-dark"></div>
+      <div class="section-inner cli-inner">
+        <div class="cli-copy">
+          <span class="eyebrow on-dark"
+            ><span class="dot"></span>The CLI</span
+          >
+          <h2 class="display on-dark">
+            Boring on purpose.<br /><em>Predictable</em> by design.
+          </h2>
+          <p class="lead on-dark">
+            No SaaS console required. Every action is a single command,
+            deterministic, idempotent, and produces an audit event you can
+            replay.
+          </p>
+          <ul class="cli-points">
+            <li>
+              <span class="bullet"></span>Signed packages on every distro,
+              GHCR images for K8s
+            </li>
+            <li>
+              <span class="bullet"></span>Works inside k8s, systemd, Nomad,
+              or bare metal via Ansible
+            </li>
+            <li>
+              <span class="bullet"></span>JSON output on every command — pipe
+              to anything
+            </li>
+          </ul>
         </div>
+        <div class="terminal">
+          <div class="term-chrome">
+            <span class="dot r"></span><span class="dot y"></span><span
+              class="dot g"></span>
+            <span class="term-title">openzro · zsh</span>
+          </div>
+          <div class="term-tabs" id="term-tabs">
+            <button class="term-tab active" data-tab="install">Install</button>
+            <button class="term-tab" data-tab="join">Join</button>
+            <button class="term-tab" data-tab="audit">Audit</button>
+          </div>
+
+          <pre class="term-body" data-pane="install">
+<span class="term-line"><span class="prompt">$</span><span class="cmd">curl -fsSL https://pkg.openzro.io/install.sh | sh</span></span>
+<span class="term-line"><span class="comment">→ detected ubuntu 22.04 · adding pkg.openzro.io apt repo</span></span>
+<span class="term-line"><span class="comment">→ installing openzro 0.53.1-alpha.13 · BSD-3</span></span>
+<span class="term-line"><span class="comment">→ creating systemd unit · openzro.service</span></span>
+<span class="term-line"><span class="prompt">$</span><span class="cmd">openzro version</span></span>
+<span class="term-line"><span class="out">openzro v0.53.1-alpha.13 (BSD-3) · WireGuard 1.0.20210914</span></span>
+          </pre>
+          <pre class="term-body" data-pane="join" hidden>
+<span class="term-line"><span class="prompt">$</span><span class="cmd">sudo openzro up --management-url https://openzro.example.com</span></span>
+<span class="term-line"><span class="comment">→ generating WireGuard key · ed25519</span></span>
+<span class="term-line"><span class="comment">→ presenting OIDC login · browser opened</span></span>
+<span class="term-line"><span class="warn">⏸ awaiting login · provider: keycloak</span></span>
+<span class="term-line"><span class="ok">✓ joined · scope: prod · routes: 10.42.0.0/16, 10.50.0.0/24</span></span>
+<span class="term-line"><span class="prompt">$</span><span class="cmd">_<span class="cursor"></span></span></span>
+          </pre>
+          <pre class="term-body" data-pane="audit" hidden>
+<span class="term-line"><span class="prompt">$</span><span class="cmd">openzro status -d</span></span>
+<span class="term-line"><span class="out">Management: Connected</span></span>
+<span class="term-line"><span class="out">Signal:     Connected</span></span>
+<span class="term-line"><span class="out">Relays:     OK · 2 reachable</span></span>
+<span class="term-line"><span class="prompt">$</span><span class="cmd">journalctl -u openzro -f</span></span>
+<span class="term-line"><span class="comment">2026-04-30T05:14:02 · admission · sre@example.com · admitted</span></span>
+<span class="term-line"><span class="comment">2026-04-30T05:14:08 · peer-connect · edge-sa · 12ms</span></span>
+<span class="term-line"><span class="comment">2026-04-30T13:02:41 · route-add · 10.42.0.0/16</span></span>
+          </pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         6. USE CASES — light section, 4 industry/topology cards
+         ============================================================ -->
+    <section class="section light" id="use-cases">
+      <div class="bg-grid-light"></div>
+      <div class="section-inner">
+        <header class="sec-head">
+          <span class="eyebrow on-light"
+            ><span class="dot"></span>Use cases</span
+          >
+          <h2 class="display">
+            What teams are running it for.
+          </h2>
+        </header>
+        <div class="cases">
+          <div class="case reveal">
+            <div class="case-head">
+              <span class="case-tag">multi-cloud</span>
+            </div>
+            <h3>Mesh across AWS, GCP and on-prem</h3>
+            <p>
+              One overlay between every region, every account, every cloud.
+              Replace VPC peering and Transit Gateway with a peer-to-peer
+              fabric that your platform team controls end to end.
+            </p>
+            <a class="case-link" href="https://docs.openzro.io">Read the docs →</a>
+          </div>
+          <div class="case reveal">
+            <div class="case-head">
+              <span class="case-tag">platform</span>
+            </div>
+            <h3>Multi-cluster Kubernetes</h3>
+            <p>
+              Routable, encrypted plane between clusters with per-namespace
+              ACLs. Replace bespoke peering with one abstraction. Helm chart
+              ships everything you need.
+            </p>
+            <a
+              class="case-link"
+              href="https://github.com/openzro/helms"
+              >Helm chart →</a
+            >
+          </div>
+          <div class="case reveal">
+            <div class="case-head">
+              <span class="case-tag">on-prem</span>
+            </div>
+            <h3>Air-gap-friendly self-host</h3>
+            <p>
+              No telemetry, no SaaS, no phone-home. Mirror the registry once,
+              run it forever in your enclave. Bare-metal Ansible playbook for
+              hosts without Kubernetes.
+            </p>
+            <a
+              class="case-link"
+              href="https://github.com/openzro/openzro-ansible"
+              >Ansible playbook →</a
+            >
+          </div>
+          <div class="case reveal">
+            <div class="case-head">
+              <span class="case-tag">replace VPN</span>
+            </div>
+            <h3>Drop-in replacement for legacy VPN</h3>
+            <p>
+              Per-peer identity, per-flow audit, modern OIDC login. Keep your
+              IdP, swap the tunnel. Native clients on macOS, Windows, Linux,
+              Android and iOS.
+            </p>
+            <a
+              class="case-link"
+              href="https://github.com/openzro/openzro/blob/main/docs/adr/0001-openzro-foundation.md"
+              >Why we forked →</a
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         7. COMPARE — deeper dark, table
+         ============================================================ -->
+    <section class="section deep" id="compare">
+      <div class="bg-grid-dark"></div>
+      <div class="section-inner">
+        <header class="sec-head">
+          <span class="eyebrow on-dark"
+            ><span class="dot"></span>Comparison</span
+          >
+          <h2 class="display on-dark">
+            Versus the rack of compromises<br />you've been stacking.
+          </h2>
+        </header>
+        <div class="compare-table">
+          <div class="ct-row ct-head">
+            <div class="ct-feat">Capability</div>
+            <div class="ct-col oz">
+              <img src="/brand/openzro-icon.svg" width="20" height="20" alt="" />
+              <span>openZro</span>
+            </div>
+            <div class="ct-col">Legacy VPN</div>
+            <div class="ct-col">SaaS SD-WAN</div>
+          </div>
+
+          <div class="ct-row">
+            <div class="ct-feat">Self-hosted, no SaaS dependency</div>
+            <div class="ct-col oz"><span class="cell yes">✓</span></div>
+            <div class="ct-col">
+              <span class="cell partial">partial</span>
+            </div>
+            <div class="ct-col"><span class="cell no">—</span></div>
+          </div>
+          <div class="ct-row">
+            <div class="ct-feat">Full WireGuard mesh (peer-to-peer)</div>
+            <div class="ct-col oz"><span class="cell yes">✓</span></div>
+            <div class="ct-col"><span class="cell no">—</span></div>
+            <div class="ct-col">
+              <span class="cell partial">partial</span>
+            </div>
+          </div>
+          <div class="ct-row">
+            <div class="ct-feat">OIDC SSO with any IdP (Dex-federated)</div>
+            <div class="ct-col oz"><span class="cell yes">✓</span></div>
+            <div class="ct-col">
+              <span class="cell partial">partial</span>
+            </div>
+            <div class="ct-col"><span class="cell yes">✓</span></div>
+          </div>
+          <div class="ct-row">
+            <div class="ct-feat">High-availability control plane</div>
+            <div class="ct-col oz"><span class="cell yes">✓</span></div>
+            <div class="ct-col">
+              <span class="cell partial">partial</span>
+            </div>
+            <div class="ct-col"><span class="cell yes">✓</span></div>
+          </div>
+          <div class="ct-row">
+            <div class="ct-feat">Tag-based ACL policies</div>
+            <div class="ct-col oz"><span class="cell yes">✓</span></div>
+            <div class="ct-col"><span class="cell no">—</span></div>
+            <div class="ct-col">
+              <span class="cell partial">partial</span>
+            </div>
+          </div>
+          <div class="ct-row">
+            <div class="ct-feat">Audit-grade event log</div>
+            <div class="ct-col oz"><span class="cell yes">✓</span></div>
+            <div class="ct-col">
+              <span class="cell partial">partial</span>
+            </div>
+            <div class="ct-col"><span class="cell no">—</span></div>
+          </div>
+          <div class="ct-row">
+            <div class="ct-feat">BSD-3 license, fork-friendly</div>
+            <div class="ct-col oz"><span class="cell yes">✓</span></div>
+            <div class="ct-col">
+              <span class="cell partial">mixed</span>
+            </div>
+            <div class="ct-col"><span class="cell no">—</span></div>
+          </div>
+          <div class="ct-row">
+            <div class="ct-feat">Air-gap deployable</div>
+            <div class="ct-col oz"><span class="cell yes">✓</span></div>
+            <div class="ct-col">
+              <span class="cell partial">partial</span>
+            </div>
+            <div class="ct-col"><span class="cell no">—</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         8. FINAL CTA — gradient
+         ============================================================ -->
+    <section class="section cta-section">
+      <div class="bg-aurora"></div>
+      <div class="section-inner cta-inner">
+        <img
+          src="/brand/openzro-icon.svg"
+          width="72"
+          height="72"
+          class="cta-icon"
+          alt=""
+        />
+        <h2 class="display on-dark">Run the mesh. Own the keys.</h2>
+        <p class="lead on-dark">
+          Self-host in 10 minutes. BSD-3-Clause. Forever yours.
+        </p>
+        <div class="hero-cta">
+          <a
+            href="https://docs.openzro.io/get-started/install"
+            class="btn primary">Install openZro →</a
+          >
+          <a
+            href="https://github.com/openzro/openzro"
+            class="btn ghost">Star on GitHub</a
+          >
+        </div>
+        <div class="cta-meta">
+          <code>curl -fsSL https://pkg.openzro.io/install.sh | sh</code>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         9. FOOTER
+         ============================================================ -->
+    <footer class="footer">
+      <div class="section-inner footer-inner">
+        <div class="foot-brand">
+          <a href="/" class="brand">
+            <img src="/brand/openzro-icon.svg" width="24" height="24" alt="" />
+            <span class="brand-wm sm">open<em>Z</em>ro</span>
+          </a>
+          <p>Self-hosted zero-trust mesh, on your iron.</p>
+        </div>
+        <div class="foot-cols">
+          <div>
+            <h4>Product</h4>
+            <a href="https://docs.openzro.io">Docs</a>
+            <a href="https://github.com/openzro/openzro/releases">Releases</a>
+            <a href="https://pkg.openzro.io">Package repo</a>
+            <a
+              href="https://github.com/openzro/openzro/blob/main/CHANGELOG.md"
+              >Changelog</a
+            >
+          </div>
+          <div>
+            <h4>Resources</h4>
+            <a
+              href="https://github.com/openzro/openzro/blob/main/docs/adr"
+              >ADRs</a
+            >
+            <a href="https://github.com/openzro/helms">Helm chart</a>
+            <a href="https://github.com/openzro/openzro-ansible"
+              >Ansible playbook</a
+            >
+            <a
+              href="https://github.com/openzro/openzro/blob/main/docs/security/advisories.md"
+              >Security</a
+            >
+          </div>
+          <div>
+            <h4>Open source</h4>
+            <a href="https://github.com/openzro/openzro">GitHub</a>
+            <a href="https://github.com/openzro/openzro/blob/main/LICENSE"
+              >License (BSD-3)</a
+            >
+            <a
+              href="https://github.com/openzro/openzro/blob/main/docs/adr/0001-openzro-foundation.md"
+              >Why we forked</a
+            >
+            <a href="https://github.com/openzro/openzro/discussions">Discussions</a>
+          </div>
+        </div>
+      </div>
+      <div class="foot-bottom">
+        <span>© 2026 openZro · BSD-3-Clause</span>
+        <span class="mono">
+          WireGuard® is a registered trademark of Jason A. Donenfeld
+        </span>
       </div>
     </footer>
+
+    <!-- ============================================================
+         Inline JS — canvas init, tab switcher, scroll reveal,
+         marquee duplication, nav blur on scroll
+         ============================================================ -->
+    <script>
+      import { initMeshViz } from "../scripts/mesh-viz.js";
+
+      const ready = () =>
+        document.readyState === "loading"
+          ? document.addEventListener("DOMContentLoaded", boot)
+          : boot();
+
+      function boot() {
+        // 1. Mesh canvas
+        const canvas = document.getElementById("mesh-canvas");
+        if (canvas) initMeshViz(canvas);
+
+        // 2. Marquee — duplicate items so the loop is seamless
+        const track = document.getElementById("marquee-track");
+        if (track) {
+          track.append(...Array.from(track.children).map((n) => n.cloneNode(true)));
+        }
+
+        // 3. CLI terminal tabs
+        const tabs = document.getElementById("term-tabs");
+        if (tabs) {
+          tabs.addEventListener("click", (e) => {
+            const btn = e.target.closest(".term-tab");
+            if (!btn) return;
+            const target = btn.dataset.tab;
+            tabs.querySelectorAll(".term-tab").forEach((b) =>
+              b.classList.toggle("active", b === btn),
+            );
+            document.querySelectorAll(".term-body").forEach((p) => {
+              p.hidden = p.dataset.pane !== target;
+            });
+          });
+        }
+
+        // 4. Sticky nav — scrolled state
+        const nav = document.getElementById("nav");
+        if (nav) {
+          const onScroll = () =>
+            nav.classList.toggle("scrolled", window.scrollY > 12);
+          window.addEventListener("scroll", onScroll, { passive: true });
+          onScroll();
+        }
+
+        // 5. Scroll reveal
+        document
+          .querySelectorAll(".hero .reveal")
+          .forEach((el) => el.classList.add("in"));
+
+        document
+          .querySelectorAll(".step, .feature, .case, .ct-row:not(.ct-head)")
+          .forEach((el) => el.classList.add("reveal"));
+
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              if (e.isIntersecting) {
+                e.target.classList.add("in");
+                io.unobserve(e.target);
+              }
+            }
+          },
+          { threshold: 0.08, rootMargin: "0px 0px -40px 0px" },
+        );
+        document.querySelectorAll(".reveal:not(.in)").forEach((el) => {
+          const r = el.getBoundingClientRect();
+          if (r.top < window.innerHeight && r.bottom > 0) {
+            el.classList.add("in");
+          } else {
+            io.observe(el);
+          }
+        });
+      }
+
+      ready();
+    </script>
   </body>
 </html>
