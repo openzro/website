@@ -187,6 +187,12 @@ const canonical = "https://openzro.io";
             ><span class="dot"></span>posture · macOS 14.4 · FileVault on</span
           >
           <span class="marquee-item"
+            ><span class="dot"></span>intune · device compliant ✓</span
+          >
+          <span class="marquee-item"
+            ><span class="dot"></span>sentinelone · agent healthy ✓</span
+          >
+          <span class="marquee-item"
             ><span class="dot"></span>k8s-prod joined mesh</span
           >
           <span class="marquee-item"
@@ -368,6 +374,29 @@ $ helm install openzro openzro/openzro \
               stroke-width="1.5"
               stroke-linecap="round"
               stroke-linejoin="round"
+              ><path
+                d="M14 4l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V7l8-3z"
+                stroke="#a78bfa"></path><path
+                d="M10 13l3 3 5-5"
+                stroke="#a78bfa"></path></svg
+            >
+            <h3>MDM / EDR posture validation</h3>
+            <p>
+              Microsoft Intune, SentinelOne, Huntress, CrowdStrike Falcon —
+              admission gated on real-time compliance status from your fleet
+              tooling. Plus 5 native checks (OS / kernel version, geo, peer
+              network range, required processes, client version).
+            </p>
+          </div>
+          <div class="feature reveal">
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 28 28"
+              fill="none"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
               ><path d="M14 4v8M14 16v8M4 14h8M16 14h8" stroke="#a78bfa"
               ></path><circle cx="14" cy="14" r="3" stroke="#a78bfa"
               ></circle></svg
@@ -397,28 +426,6 @@ $ helm install openzro openzro/openzro \
               Every admission, policy change, peer connect / disconnect tied
               to a verified identity. JSON output on every CLI; ship to your
               SIEM via syslog or push to S3.
-            </p>
-          </div>
-          <div class="feature reveal">
-            <svg
-              width="28"
-              height="28"
-              viewBox="0 0 28 28"
-              fill="none"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              ><rect x="4" y="6" width="20" height="6" rx="1" stroke="#a78bfa"
-              ></rect><rect x="4" y="16" width="20" height="6" rx="1" stroke="#a78bfa"
-              ></rect><circle cx="8" cy="9" r="0.8" fill="#a78bfa"
-              ></circle><circle cx="8" cy="19" r="0.8" fill="#a78bfa"
-              ></circle></svg
-            >
-            <h3>Native installers, every OS</h3>
-            <p>
-              Signed deb, rpm and pacman repos, Windows MSI, macOS .pkg,
-              Homebrew tap, Docker images, Helm chart, Ansible playbook —
-              every distribution channel ships from the same release.
             </p>
           </div>
         </div>
@@ -638,6 +645,16 @@ $ helm install openzro openzro/openzro \
           </div>
           <div class="ct-row">
             <div class="ct-feat">Tag-based ACL policies</div>
+            <div class="ct-col oz"><span class="cell yes">✓</span></div>
+            <div class="ct-col"><span class="cell no">—</span></div>
+            <div class="ct-col">
+              <span class="cell partial">partial</span>
+            </div>
+          </div>
+          <div class="ct-row">
+            <div class="ct-feat">
+              MDM / EDR posture (Intune, SentinelOne, Huntress, CrowdStrike)
+            </div>
             <div class="ct-col oz"><span class="cell yes">✓</span></div>
             <div class="ct-col"><span class="cell no">—</span></div>
             <div class="ct-col">
