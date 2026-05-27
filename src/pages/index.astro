@@ -22,7 +22,7 @@ import "../styles/sections.css";
 
 const title = "openZro — Self-hosted zero-trust mesh on WireGuard";
 const description =
-  "Self-hosted WireGuard mesh with HA, OIDC SSO, peer admission gates, and audit-grade logs. BSD-3-Clause continuation of NetBird at v0.52.2 — kept permissively licensed.";
+  "Self-hosted WireGuard mesh with HA, OIDC SSO, TOTP MFA, custom DNS zones, peer admission gates, MDM posture, and audit-grade logs. BSD-3-Clause continuation of NetBird at v0.52.2 — kept permissively licensed and already running production deployments.";
 const canonical = "https://openzro.io";
 ---
 
@@ -85,7 +85,7 @@ const canonical = "https://openzro.io";
 
       <div class="section-inner hero-inner">
         <div class="hero-copy">
-          <div class="tag dark live">v0.53.1 · BSD-3 fork of NetBird</div>
+          <div class="tag dark live">v0.53.1-alpha.83 · BSD-3 · in production today</div>
           <h1 class="display reveal">
             Zero-trust mesh,<br />
             <span class="grad">on your iron.</span>
@@ -216,6 +216,21 @@ const canonical = "https://openzro.io";
           <span class="marquee-item"
             ><span class="dot"></span>helm install openzro openzro/openzro</span
           >
+          <span class="marquee-item"
+            ><span class="dot"></span>2fa · totp enrolled · backup codes ready</span
+          >
+          <span class="marquee-item"
+            ><span class="dot"></span>dns zone · internal.corp · 4 records</span
+          >
+          <span class="marquee-item"
+            ><span class="dot"></span>posture · last 30d · 0 violations</span
+          >
+          <span class="marquee-item"
+            ><span class="dot"></span>flow events → s3 · 12.4k events/day</span
+          >
+          <span class="marquee-item"
+            ><span class="dot"></span>client · self-update available · 0.53.1-alpha.83</span
+          >
         </div>
       </div>
     </section>
@@ -271,7 +286,7 @@ $ helm install openzro openzro/openzro \
             </p>
             <pre class="code-block light"><code>$ ansible-playbook -i inventories/prod \
     playbooks/update.yml \
-    -e openzro_version=0.53.1-alpha.13</code></pre>
+    -e openzro_version=0.53.1-alpha.83</code></pre>
           </div>
         </div>
       </div>
@@ -288,7 +303,7 @@ $ helm install openzro openzro/openzro \
             ><span class="dot"></span>Features</span
           >
           <h2 class="display on-dark">
-            Six capabilities that turn WireGuard<br />
+            Nine capabilities that turn WireGuard<br />
             into an enterprise-grade fabric.
           </h2>
           <p class="lead on-dark">
@@ -428,6 +443,75 @@ $ helm install openzro openzro/openzro \
               SIEM via syslog or push to S3.
             </p>
           </div>
+          <div class="feature reveal">
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 28 28"
+              fill="none"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><rect x="6" y="12" width="16" height="11" rx="2" stroke="#a78bfa"
+              ></rect><path
+                d="M9 12V8a5 5 0 0110 0v4"
+                stroke="#a78bfa"></path><circle cx="14" cy="17" r="1.5" fill="#a78bfa"
+              ></circle></svg
+            >
+            <h3>TOTP MFA for local accounts</h3>
+            <p>
+              Per-account enforcement toggles, per-session token binding,
+              lockout windows, and backup codes. Forced enrolment redirect
+              when an operator flips enforcement on. Works without an
+              external IdP — TOTP is openZro's first-class second factor.
+            </p>
+          </div>
+          <div class="feature reveal">
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 28 28"
+              fill="none"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><circle cx="14" cy="14" r="9" stroke="#a78bfa"></circle><path
+                d="M5 14h18M14 5c2.5 3 4 6 4 9s-1.5 6-4 9c-2.5-3-4-6-4-9s1.5-6 4-9z"
+                stroke="#a78bfa"></path></svg
+            >
+            <h3>Custom DNS zones per group</h3>
+            <p>
+              Define internal zones (<code>internal.corp</code>,
+              <code>dev.lab</code>) and distribute them only to the peer
+              groups that should resolve them. A/AAAA/CNAME records, per-record
+              TTL, search-domain control — the agent honours
+              <code>SearchDomainEnabled</code> end-to-end.
+            </p>
+          </div>
+          <div class="feature reveal">
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 28 28"
+              fill="none"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path
+                d="M4 8h20M4 14h20M4 20h20"
+                stroke="#a78bfa"></path><circle cx="8" cy="8" r="1.5" fill="#a78bfa"
+              ></circle><circle cx="14" cy="14" r="1.5" fill="#a78bfa"
+              ></circle><circle cx="20" cy="20" r="1.5" fill="#a78bfa"
+              ></circle></svg
+            >
+            <h3>Flow events to your data lake</h3>
+            <p>
+              Every peer-to-peer connection tagged with the policy that
+              admitted it, exported to S3, GCS, Datadog Logs, Elastic, or any
+              HTTP webhook (SSRF-guarded). Cold-archive read-back via DuckDB
+              for older retention windows.
+            </p>
+          </div>
         </div>
       </div>
     </section>
@@ -480,10 +564,10 @@ $ helm install openzro openzro/openzro \
           <pre class="term-body" data-pane="install">
 <span class="term-line"><span class="prompt">$</span><span class="cmd">curl -fsSL https://pkg.openzro.io/install.sh | sh</span></span>
 <span class="term-line"><span class="comment">→ detected ubuntu 22.04 · adding pkg.openzro.io apt repo</span></span>
-<span class="term-line"><span class="comment">→ installing openzro 0.53.1-alpha.13 · BSD-3</span></span>
+<span class="term-line"><span class="comment">→ installing openzro 0.53.1-alpha.83 · BSD-3</span></span>
 <span class="term-line"><span class="comment">→ creating systemd unit · openzro.service</span></span>
 <span class="term-line"><span class="prompt">$</span><span class="cmd">openzro version</span></span>
-<span class="term-line"><span class="out">openzro v0.53.1-alpha.13 (BSD-3) · WireGuard 1.0.20210914</span></span>
+<span class="term-line"><span class="out">openzro v0.53.1-alpha.83 (BSD-3) · WireGuard 1.0.20210914</span></span>
           </pre>
           <pre class="term-body" data-pane="join" hidden>
 <span class="term-line"><span class="prompt">$</span><span class="cmd">sudo openzro up --management-url https://openzro.example.com</span></span>
@@ -692,6 +776,34 @@ $ helm install openzro openzro/openzro \
               <span class="cell partial">partial</span>
             </div>
             <div class="ct-col"><span class="cell no">—</span></div>
+          </div>
+          <div class="ct-row">
+            <div class="ct-feat">
+              TOTP MFA for local accounts (no external IdP needed)
+            </div>
+            <div class="ct-col oz"><span class="cell yes">✓</span></div>
+            <div class="ct-col"><span class="cell no">—</span></div>
+            <div class="ct-col">
+              <span class="cell partial">partial</span>
+            </div>
+          </div>
+          <div class="ct-row">
+            <div class="ct-feat">
+              Custom internal DNS zones per peer group
+            </div>
+            <div class="ct-col oz"><span class="cell yes">✓</span></div>
+            <div class="ct-col"><span class="cell no">—</span></div>
+            <div class="ct-col"><span class="cell no">—</span></div>
+          </div>
+          <div class="ct-row">
+            <div class="ct-feat">
+              Flow events → S3 / GCS / Datadog / Elastic / webhook
+            </div>
+            <div class="ct-col oz"><span class="cell yes">✓</span></div>
+            <div class="ct-col"><span class="cell no">—</span></div>
+            <div class="ct-col">
+              <span class="cell partial">partial</span>
+            </div>
           </div>
         </div>
       </div>
